@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>細菌素純化實驗室系統</title>
+  <title>細菌素純化 Lab</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <!-- 頂部導覽列 -->
   <header>
-    <div class="logo">🧪 細菌素純化 Lab</div>
+    <div class="logo">🧫 細菌素純化 Lab</div>
     <nav>
-      <button class="nav-btn active" onclick="switchTab('sop')">一、實驗 SOP 庫</button>
+      <button class="nav-btn active" onclick="switchTab('home')">首頁</button>
+      <button class="nav-btn" onclick="switchTab('sop')">一、實驗 SOP 庫</button>
       <button class="nav-btn" onclick="switchTab('logs')">二、實驗結果紀錄</button>
       <button class="nav-btn" onclick="switchTab('plan')">三、實驗規劃區</button>
       <button class="nav-btn" onclick="switchTab('tools')">四、常用軟體與網站</button>
@@ -20,125 +21,98 @@
   </header>
 
   <main class="container">
+    <!-- 首頁 (新增) -->
+    <section id="tab-home" class="tab-content active">
+      <div class="profile-card">
+        <div class="avatar-container">
+          <!-- 請將你的大頭照圖片命名為 profile.jpg 放至專案資料夾，或替換為圖片網址 -->
+          <img src="profile.jpg" alt="個人大頭照" class="profile-avatar" onerror="this.src='https://via.placeholder.com/150'">
+        </div>
+        <h2 class="profile-name">研究員簡介</h2>
+        <p class="profile-bio">
+          歡迎來到細菌素純化實驗紀錄系統！本平台用於紀錄實驗 SOP、數據結果與日常規劃。
+        </p>
+        <div class="profile-details">
+          <div class="info-item"><strong>專案領域：</strong> 微生物學 / 細菌素純化與分離</div>
+          <div class="info-item"><strong>實驗室：</strong> 細菌素純化 Lab</div>
+        </div>
+      </div>
+    </section>
 
-    <!-- 頁面一：實驗 SOP 庫 -->
-    <section id="sop" class="tab-content active">
+    <!-- 頁面一：SOP 庫 -->
+    <section id="tab-sop" class="tab-content">
       <div class="sop-layout">
-        <!-- 左側 14 個主題選單 -->
         <aside class="sidebar">
           <h3>SOP 主題選單</h3>
-          <ul id="sop-menu">
-            <li class="active" onclick="loadSop(0)">1. 培養基配置</li>
-            <li onclick="loadSop(1)">2. 滅菌釜操作</li>
-            <li onclick="loadSop(2)">3. 樣品等量稀釋</li>
-            <li onclick="loadSop(3)">4. 分離純化培養細菌</li>
-            <li onclick="loadSop(4)">5. 菌染色辨別及顯微鏡</li>
-            <li onclick="loadSop(5)">6. 凍管液/凍管/離心機</li>
-            <li onclick="loadSop(6)">7. PCR 操作配置</li>
-            <li onclick="loadSop(7)">8. 細菌活性測活</li>
-            <li onclick="loadSop(8)">9. 電泳及配膠</li>
-            <li onclick="loadSop(9)">10. 找尋最適培養基</li>
-            <li onclick="loadSop(10)">11. FPLC 操作</li>
-            <li onclick="loadSop(11)">12. 凍乾機操作</li>
-            <li onclick="loadSop(12)">13. Sep-Pak 操作</li>
-            <li onclick="loadSop(13)">14. 分子篩 & HPLC 操作</li>
-          </ul>
+          <ul id="sop-list"></ul>
         </aside>
-
-        <!-- 右側詳細內容顯示區 -->
-        <article class="sop-detail" id="sop-detail-box">
-          <h2 id="sop-title">1. 培養基配置</h2>
-          <hr>
-          <div class="sop-block">
-            <h4>🧪 實驗材料與試劑</h4>
-            <p id="sop-materials">載入中...</p>
-          </div>
-          <div class="sop-block">
-            <h4>🛠️ 使用器材</h4>
-            <p id="sop-equipment">載入中...</p>
-          </div>
-          <div class="sop-block">
-            <h4>📑 標準操作流程 (SOP)</h4>
-            <div id="sop-steps">載入中...</div>
-          </div>
-          <div class="sop-block alert">
-            <h4>⚠️ 注意事項</h4>
-            <p id="sop-notes">載入中...</p>
-          </div>
+        <article class="sop-detail" id="sop-content">
+          <!-- JS 動態載入 SOP 內容 -->
         </article>
       </div>
     </section>
 
     <!-- 頁面二：實驗結果紀錄 -->
-    <section id="logs" class="tab-content">
-      <h2>📝 實驗結果與討論紀錄</h2>
+    <section id="tab-logs" class="tab-content">
       <div class="card">
-        <h3>新增實驗紀錄</h3>
-        <form class="log-form" onsubmit="addLog(event)">
+        <h2>新增實驗紀錄</h2>
+        <form id="log-form" class="log-form">
           <input type="date" id="log-date" required>
-          <input type="text" id="log-action" placeholder="操作項目（如：Sep-Pak 粗純化）" required>
-          <textarea id="log-result" placeholder="實驗結果與數據描述" rows="3" required></textarea>
-          <textarea id="log-advisor" placeholder="老師給予的建議" rows="2"></textarea>
-          <textarea id="log-improvement" placeholder="團隊改良與優化建議" rows="2"></textarea>
-          <button type="submit" class="btn-submit">新增紀錄</button>
+          <input type="text" id="log-title" placeholder="實驗名稱 (例如：SDS-PAGE 電泳分析)" required>
+          <textarea id="log-content" rows="4" placeholder="請輸入實驗過程、數據與觀察結果..." required></textarea>
+          <button type="submit" class="btn-submit">儲存紀錄</button>
         </form>
       </div>
-
-      <div id="log-list" class="log-list">
-        <!-- 動態渲染歷史紀錄 -->
+      <div class="card">
+        <h2>歷史紀錄列表</h2>
+        <div id="log-list"></div>
       </div>
     </section>
 
     <!-- 頁面三：實驗規劃區 -->
-    <section id="plan" class="tab-content">
-      <h2>📅 實驗行程規劃與待辦事項</h2>
+    <section id="tab-plan" class="tab-content">
       <div class="plan-grid">
         <div class="card">
-          <h3>📌 待辦清單 (To-Do List)</h3>
+          <h2>實驗待辦事項</h2>
           <div class="input-group">
-            <input type="text" id="todo-input" placeholder="輸入待辦事項 (如：配 10% SDS-PAGE 膠)...">
+            <input type="text" id="todo-input" placeholder="新增待辦項目...">
             <button onclick="addTodo()">新增</button>
           </div>
           <ul id="todo-list" class="todo-list"></ul>
         </div>
         <div class="card">
-          <h3>📝 重要事項備忘錄</h3>
-          <textarea id="memo-input" rows="8" placeholder="填寫週會報告重點、耗材採購提醒等..." onchange="saveMemo()"></textarea>
+          <h2>研究備忘錄</h2>
+          <textarea id="memo-input" rows="8" placeholder="在此記錄實驗想法或臨時筆記..." oninput="saveMemo()"></textarea>
         </div>
       </div>
     </section>
 
-    <!-- 頁面四：使用的軟體標示區 -->
-    <section id="tools" class="tab-content">
-      <h2>💻 生物資訊工具與分析軟體</h2>
-      <div class="tools-grid">
-        <div class="tool-card">
-          <h3>NCBI BLAST</h3>
-          <span class="tag">線上網站</span>
-          <p>用於蛋白質與核酸序列比對與同源性分析。</p>
-          <a href="https://blast.ncbi.nlm.nih.gov/" target="_blank">前往網站 🔗</a>
-        </div>
-        <div class="tool-card">
-          <h3>UniProt</h3>
-          <span class="tag">線上資料庫</span>
-          <p>查詢細菌素蛋白質功能、結構與胺基酸序列資訊。</p>
-          <a href="https://www.uniprot.org/" target="_blank">前往網站 🔗</a>
-        </div>
-        <div class="tool-card">
-          <h3>ImageJ</h3>
-          <span class="tag">分析軟體</span>
-          <p>膠體電泳條帶密度分析與抑菌圈直徑精確測量。</p>
-          <a href="https://imagej.nih.gov/ij/" target="_blank">下載/官網 🔗</a>
-        </div>
-        <div class="tool-card">
-          <h3>SnapGene Viewer</h3>
-          <span class="tag">分析軟體</span>
-          <p>質體圖譜繪製與 DNA 序列切點分析。</p>
-          <a href="https://www.snapgene.com/" target="_blank">前往網站 🔗</a>
+    <!-- 頁面四：常用軟體與網站 -->
+    <section id="tab-tools" class="tab-content">
+      <div class="card">
+        <h2>實驗常用軟體與線上工具</h2>
+        <div class="tools-grid">
+          <div class="tool-card">
+            <h3>NCBI BLAST</h3>
+            <span class="tag">序列比對</span>
+            <p>用於蛋白質與 DNA 序列同源性搜尋與比對。</p>
+            <a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi" target="_blank">前往網站 →</a>
+          </div>
+          <div class="tool-card">
+            <h3>ExPASy ProtParam</h3>
+            <span class="tag">蛋白質分析</span>
+            <p>計算蛋白質分子量 (MW)、等電點 (pI) 等理化性質。</p>
+            <a href="https://web.expasy.org/protparam/" target="_blank">前往網站 →</a>
+          </div>
+          <div class="tool-card">
+            <h3>UniProt</h3>
+            <span class="tag">資料庫</span>
+            <p>全球權威蛋白質序列與功能資訊資料庫。</p>
+            <a href="https://www.uniprot.org/" target="_blank">前往網站 →</a>
+          </div>
         </div>
       </div>
     </section>
-
   </main>
 
   <script src="script.js"></script>
