@@ -178,7 +178,7 @@ function loadSopContent(id) {
   `;
 }
 
-// 實驗紀錄表單處理
+// 實驗紀錄表單處理（已加入圖片網址與參考連結處理）
 const logForm = document.getElementById('log-form');
 if (logForm) {
   logForm.addEventListener('submit', (e) => {
@@ -186,9 +186,15 @@ if (logForm) {
     const date = document.getElementById('log-date').value;
     const title = document.getElementById('log-title').value;
     const content = document.getElementById('log-content').value;
+    
+    // 讀取圖片網址與參考連結 (如果欄位不存在則帶入空值)
+    const imgUrlInput = document.getElementById('log-img-url');
+    const linkInput = document.getElementById('log-link');
+    const imgUrl = imgUrlInput ? imgUrlInput.value.trim() : '';
+    const linkUrl = linkInput ? linkInput.value.trim() : '';
 
     const logs = JSON.parse(localStorage.getItem('lab_logs') || '[]');
-    logs.unshift({ date, title, content });
+    logs.unshift({ date, title, content, imgUrl, linkUrl });
     localStorage.setItem('lab_logs', JSON.stringify(logs));
 
     logForm.reset();
@@ -196,7 +202,7 @@ if (logForm) {
   });
 }
 
-// 載入歷史紀錄
+// 載入歷史紀錄（已加入圖片與參考連結渲染功能）
 function loadLogs() {
   const logList = document.getElementById('log-list');
   if (!logList) return;
@@ -211,6 +217,8 @@ function loadLogs() {
     <div class="log-item">
       <h4>[${log.date}] ${log.title}</h4>
       <p style="color: #d1d5db; white-space: pre-wrap;">${log.content}</p>
+      ${log.imgUrl ? `<img src="${log.imgUrl}" alt="實驗照片" class="log-img-preview" onerror="this.style.display='none'">` : ''}
+      ${log.linkUrl ? `<a href="${log.linkUrl}" target="_blank" class="log-link-btn">🔗 開啟參考連結 / 文獻</a>` : ''}
     </div>
   `).join('');
 }
